@@ -23,10 +23,10 @@ const getCommentBoxAsync = (
         observer.disconnect();
       }
     });
-
     observer.observe(prDescriptionBlock, {
       subtree: true,
       childList: true,
+      attributes: true,
     });
   });
 };

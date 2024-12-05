@@ -48,6 +48,9 @@ export const createEditReleaseNotesPopup = ({
   const popup = createElement("div", "draggable-popup", null, (element) => {
     element.style.width = `${width}px`;
     element.style.height = `${height}px`;
+    element.style.position = 'absolute';
+    element.style.resize = 'both';
+    element.style.overflow = 'auto';
   });
 
   const header = createHeader({

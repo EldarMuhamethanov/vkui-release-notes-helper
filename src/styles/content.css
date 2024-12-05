@@ -102,6 +102,21 @@
   transition: box-shadow 0.2s ease;
 }
 
+.popup-resizer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 15px;
+  height: 15px;
+  cursor: se-resize;
+  background: linear-gradient(135deg, transparent 50%, #666 50%);
+}
+
+.draggable-popup {
+  min-width: 300px;
+  min-height: 200px;
+}
+
 .draggable-popup:hover {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
@@ -148,6 +163,9 @@
   flex-grow: 1;
   overflow-y: auto;
   padding-bottom: 66px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .draggable-popup-textarea {
@@ -309,6 +327,13 @@
   color: #a40e26;
 }
 
+.release-notes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-grow: 1;
+}
+
 .popup-add-change-mode .release-notes-container {
   opacity: 0.3;
   pointer-events: none;
@@ -436,4 +461,12 @@
 .popup-button-secondary:hover {
   background-color: var(--color-btn-hover-bg);
   border-color: var(--color-btn-hover-border);
+}
+.release-notes-placeholder {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+  margin-inline: auto;
+  margin-block: auto;
 }

@@ -18,6 +18,17 @@ export const createReleaseNotesContainer = ({
   );
   const renderReleaseNotes = () => {
     releaseNotesContainer.innerHTML = "";
+    
+    if (notesData.length === 0) {
+      const placeholder = createElement(
+        "div",
+        "release-notes-placeholder",
+        releaseNotesContainer
+      );
+      placeholder.textContent = "Нет релиз-ноутов. Добавьте новые изменения, используя форму выше.";
+      return;
+    }
+
     notesData.forEach((section) => {
       createReleaseNotesSection({
         releaseNotes: section,
