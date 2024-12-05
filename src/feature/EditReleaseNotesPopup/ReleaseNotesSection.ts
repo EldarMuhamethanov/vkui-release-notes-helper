@@ -12,7 +12,7 @@ const mutateObject = (obj: any, newObj: any) => {
     Object.assign(obj, newObj);
 }
 
-const createReleaseNotesItem = ({
+export const createReleaseNotesItem = ({
   item,
   container,
   onUpdate,

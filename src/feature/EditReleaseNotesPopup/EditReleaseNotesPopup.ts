@@ -1,8 +1,15 @@
 import { getPullRequestReleaseNotesBody } from "../../parsing/getPullRequestReleaseNotesBody";
+import { getHeaderBySectionType } from "../../parsing/headers";
 import { releaseNotesUpdater } from "../../parsing/releaseNotesUpdater";
+import { ChangeData, ReleaseNoteData } from "../../parsing/types";
+import { createRef } from "../../utils/createRef";
 import { createElement } from "../../utils/dom";
+import { createChangeItemForm } from "./CreateChangeItemForm";
 import { popupDnD } from "./popupDnd";
-import { createReleaseNotesSection } from "./ReleaseNotesSection";
+import {
+  createReleaseNotesItem,
+  createReleaseNotesSection,
+} from "./ReleaseNotesSection";
 
 interface DraggablePopupProps {
   width: number;
@@ -53,6 +60,16 @@ export const createEditReleaseNotesPopup = ({
       contentContainer.classList.add("popup-add-change-mode");
     });
   });
+
+  createChangeItemForm({
+    contentContainer,
+    notesData,
+    onUpdate: () => {
+      notesUpdater.updateReleaseNotes(notesData);
+      renderReleaseNotes();
+    },
+  });
+
   const releaseNotesContainer = createElement(
     "div",
     "release-notes-container",
