@@ -1,4 +1,7 @@
-import { getPullRequestReleaseNotesBody } from "../../parsing/getPullRequestReleaseNotesBody";
+import {
+  getPullRequestReleaseNotesBody,
+  getUpdatedPullRequestReleaseNotesBody,
+} from "../../parsing/getPullRequestReleaseNotesBody";
 import { releaseNotesUpdater } from "../../parsing/releaseNotesUpdater";
 import { createElement } from "../../utils/dom";
 import { createChangeItemForm } from "./CreateChangeItemForm";
@@ -20,14 +23,7 @@ const getUpdatedTextareaValue = (
   newNotesBody: string
 ) => {
   const textareaValue = textarea.value;
-
-  const releaseNotes = getPullRequestReleaseNotesBody(textareaValue);
-
-  if (releaseNotes) {
-    return textareaValue.replace(releaseNotes, `\n${newNotesBody}`);
-  }
-
-  return textareaValue + "\n" + newNotesBody;
+  return getUpdatedPullRequestReleaseNotesBody(textareaValue, newNotesBody);
 };
 
 export const createEditReleaseNotesPopup = ({
@@ -39,18 +35,16 @@ export const createEditReleaseNotesPopup = ({
 }: DraggablePopupProps): HTMLElement | null => {
   const content = textarea.value;
   const releaseNotes = getPullRequestReleaseNotesBody(content);
-  if (!releaseNotes) {
-    return null;
-  }
-  const notesUpdater = releaseNotesUpdater(releaseNotes);
+  const notesUpdater = releaseNotesUpdater(releaseNotes || "");
   const notesData = notesUpdater.getReleaseNotesData();
+  notesUpdater.updateReleaseNotes(notesData);
 
   const popup = createElement("div", "draggable-popup", null, (element) => {
     element.style.width = `${width}px`;
     element.style.height = `${height}px`;
-    element.style.position = 'absolute';
-    element.style.resize = 'both';
-    element.style.overflow = 'auto';
+    element.style.position = "absolute";
+    element.style.resize = "both";
+    element.style.overflow = "auto";
   });
 
   const header = createHeader({

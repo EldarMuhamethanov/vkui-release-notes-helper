@@ -7,7 +7,7 @@ const initEditButton = (container: HTMLElement): HTMLButtonElement => {
   return button;
 };
 
-export const initEditReleaseNotesButton = ({
+export const createEditReleaseNotesButton = ({
   container,
   onClick,
 }: {

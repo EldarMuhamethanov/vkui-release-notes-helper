@@ -6,7 +6,6 @@ export const DOCUMENTATION_HEADER = "Документация";
 export const DEPENDENCY_HEADER = "Зависимости";
 export const NEW_COMPONENT_HEADER = "Новые компоненты";
 export const BREAKING_CHANGE_HEADER = "BREAKING CHANGE";
-export const NEED_TO_DESCRIBE_HEADER = "Нужно описать";
 
 export const getSectionTypeByHeader = (header: string): SectionType | null => {
   switch (header) {

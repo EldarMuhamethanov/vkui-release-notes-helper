@@ -1,4 +1,4 @@
-import { initEditReleaseNotesButton } from "./feature/editReleaseNotesButton";
+import { createEditReleaseNotesButton } from "./feature/editReleaseNotesButton";
 import "./styles/content.css";
 import { createEditReleaseNotesPopup } from "./feature/EditReleaseNotesPopup/EditReleaseNotesPopup";
 
@@ -44,29 +44,19 @@ const initExtension = async () => {
   const commentBox = await getCommentBoxAsync(prDescriptionBlock);
   const textarea = getTextarea(commentBox);
 
-  let popup: HTMLElement | null = null;
-
-  initEditReleaseNotesButton({
-    container: commentBox,
-    onClick: () => {
-      if (popup) {
-        popup.remove();
-      }
-
-      popup = createEditReleaseNotesPopup({
-        width: 500,
-        height: 600,
-        textarea,
-        onClose: () => {
-          popup = null;
-        },
-        onSave: (newTextAreaValue) => {
-          textarea.value = newTextAreaValue;
-        },
-      });
-
-      popup && document.body.appendChild(popup);
+  const popup: HTMLElement | null = createEditReleaseNotesPopup({
+    width: 500,
+    height: 600,
+    textarea,
+    onClose: () => {},
+    onSave: (newTextAreaValue) => {
+      textarea.value = newTextAreaValue;
     },
+  });
+
+  createEditReleaseNotesButton({
+    container: commentBox,
+    onClick: () => popup && document.body.appendChild(popup),
   });
 };
 
