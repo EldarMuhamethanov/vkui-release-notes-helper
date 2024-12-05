@@ -32,9 +32,9 @@ const getCommentBoxAsync = (
 };
 
 const initExtension = async () => {
-  const prDescriptionBlock = document.querySelector<HTMLElement>(
-    '[id^="pullrequest-"]'
-  );
+  const prDescriptionBlock =
+    document.querySelector<HTMLElement>('[id^="pullrequest-"]') ||
+    document.querySelector<HTMLElement>("#new_pull_request");
 
   if (!prDescriptionBlock) {
     console.log("PR description block not found");
@@ -56,9 +56,12 @@ const initExtension = async () => {
       popup = createEditReleaseNotesPopup({
         width: 500,
         height: 600,
-        content: textarea.value,
+        textarea,
         onClose: () => {
           popup = null;
+        },
+        onSave: (newTextAreaValue) => {
+          textarea.value = newTextAreaValue;
         },
       });
 

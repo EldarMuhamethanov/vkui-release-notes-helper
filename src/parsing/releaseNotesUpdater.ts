@@ -94,7 +94,7 @@ export function releaseNotesUpdater(currentBody: string) {
   const updateReleaseNotes = (newReleaseNotes: ReleaseNoteData[]) => {
     body = newReleaseNotes
       .map((section) => {
-        return `${getHeaderBySectionType(
+        return `## ${getHeaderBySectionType(
           section.type
         )}\n${convertChangesToString(section.data)}`;
       })

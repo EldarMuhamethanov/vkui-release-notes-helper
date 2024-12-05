@@ -1,29 +1,43 @@
 import { getPullRequestReleaseNotesBody } from "../../parsing/getPullRequestReleaseNotesBody";
-import { getHeaderBySectionType } from "../../parsing/headers";
 import { releaseNotesUpdater } from "../../parsing/releaseNotesUpdater";
-import { ChangeData, ReleaseNoteData } from "../../parsing/types";
-import { createRef } from "../../utils/createRef";
 import { createElement } from "../../utils/dom";
 import { createChangeItemForm } from "./CreateChangeItemForm";
+import { createFooter } from "./Footer";
+import { createHeader } from "./Header";
 import { popupDnD } from "./popupDnd";
-import {
-  createReleaseNotesItem,
-  createReleaseNotesSection,
-} from "./ReleaseNotesSection";
+import { createReleaseNotesContainer } from "./ReleaseNotesContainer";
 
 interface DraggablePopupProps {
   width: number;
   height: number;
-  content: string;
+  textarea: HTMLTextAreaElement;
   onClose: () => void;
+  onSave: (newBody: string) => void;
 }
+
+const getUpdatedTextareaValue = (
+  textarea: HTMLTextAreaElement,
+  newNotesBody: string
+) => {
+  const textareaValue = textarea.value;
+
+  const releaseNotes = getPullRequestReleaseNotesBody(textareaValue);
+
+  if (releaseNotes) {
+    return textareaValue.replace(releaseNotes, `\n${newNotesBody}`);
+  }
+
+  return textareaValue + "\n" + newNotesBody;
+};
 
 export const createEditReleaseNotesPopup = ({
   width,
   height,
-  content,
+  textarea,
   onClose,
+  onSave,
 }: DraggablePopupProps): HTMLElement | null => {
+  const content = textarea.value;
   const releaseNotes = getPullRequestReleaseNotesBody(content);
   if (!releaseNotes) {
     return null;
@@ -35,24 +49,20 @@ export const createEditReleaseNotesPopup = ({
     element.style.width = `${width}px`;
     element.style.height = `${height}px`;
   });
-  const header = createElement("div", "draggable-popup-header", popup);
 
-  createElement("span", "draggable-popup-title", header, (element) => {
-    element.textContent = "Edit Release Notes";
+  const header = createHeader({
+    popup,
+    onCancel: () => {
+      popup.remove();
+      onClose();
+    },
   });
+
   const contentContainer = createElement(
     "div",
     "draggable-popup-content",
     popup
   );
-
-  createElement("button", "draggable-popup-close", header, (element) => {
-    element.textContent = "×";
-    element.onclick = () => {
-      popup.remove();
-      onClose();
-    };
-  });
 
   createElement("button", "add-change-button", contentContainer, (element) => {
     element.textContent = "Добавить изменение";
@@ -61,46 +71,33 @@ export const createEditReleaseNotesPopup = ({
     });
   });
 
+  const onRerenderReleaseNotes = () => {
+    notesUpdater.updateReleaseNotes(notesData);
+    renderReleaseNotes();
+  };
+
   createChangeItemForm({
     contentContainer,
     notesData,
-    onUpdate: () => {
-      notesUpdater.updateReleaseNotes(notesData);
-      renderReleaseNotes();
-    },
+    onUpdate: onRerenderReleaseNotes,
   });
 
-  const releaseNotesContainer = createElement(
-    "div",
-    "release-notes-container",
-    contentContainer
-  );
-  const renderReleaseNotes = () => {
-    releaseNotesContainer.innerHTML = "";
-    notesData.forEach((section) => {
-      createReleaseNotesSection({
-        releaseNotes: section,
-        container: releaseNotesContainer,
-        onUpdate: () => {
-          notesUpdater.updateReleaseNotes(notesData);
-          const body = notesUpdater.getBody();
-          console.log("newBody", body);
-        },
-        onDelete: (item) => {
-          const index = section.data.indexOf(item);
-          if (index !== -1) {
-            section.data.splice(index, 1);
-            renderReleaseNotes();
-            notesUpdater.updateReleaseNotes(notesData);
-            const body = notesUpdater.getBody();
-            console.log("newBody", body);
-          }
-        },
-      });
-    });
-  };
+  const renderReleaseNotes = createReleaseNotesContainer({
+    contentContainer,
+    notesData,
+    onUpdate: onRerenderReleaseNotes,
+  });
 
-  renderReleaseNotes();
+  createFooter({
+    popup,
+    onSave: () => {
+      onSave(getUpdatedTextareaValue(textarea, notesUpdater.getBody()));
+    },
+    onCancel: () => {
+      popup.remove();
+      onClose();
+    },
+  });
 
   popupDnD({ popup, header, width, height });
   return popup;

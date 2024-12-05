@@ -9,5 +9,5 @@ export const getPullRequestReleaseNotesBody = (body: string): string | null => {
   const commentStart = body.indexOf(COMMENT_START, releaseNotesIndex);
   const end = commentStart !== -1 ? commentStart : body.length;
 
-  return body.slice(releaseNotesIndex + RELEASE_NOTE_HEADER.length, end).trim();
+  return body.slice(releaseNotesIndex + RELEASE_NOTE_HEADER.length, end);
 };
