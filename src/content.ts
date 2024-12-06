@@ -51,7 +51,7 @@ const initExtension = async () => {
     height: 600,
     textareaValue: textarea.value,
     onClose: () => {
-      updateTextareaValue(textarea.value);
+      updateTextareaValue(textarea.value, true);
     },
     onSave: (newTextAreaValue) => {
       textarea.value = newTextAreaValue;

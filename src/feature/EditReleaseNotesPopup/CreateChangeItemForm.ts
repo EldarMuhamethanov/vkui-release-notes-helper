@@ -38,6 +38,15 @@ export const createChangeItemForm = ({
     createNotesChangeItem.current = getDefaultChangeData();
     createNotesChangeType.current = "improvement";
 
+    createElement<HTMLDivElement>(
+      "div",
+      "change-item-title",
+      createChangeItemForm,
+      (element) => {
+        element.textContent = "Добавление изменения";
+      }
+    );
+
     createElement<HTMLSelectElement>(
       "select",
       "change-item-type",
@@ -78,10 +87,26 @@ export const createChangeItemForm = ({
         rerenderCreateChangeItemForm();
       },
     });
+
+    const actionsContainer = createElement<HTMLDivElement>(
+      "div",
+      "change-item-actions",
+      createChangeItemForm
+    );
+    createButton({
+      className: "secondary-button",
+      text: "Отменить",
+      container: actionsContainer,
+      onClick: () => {
+        contentContainer.classList.remove("popup-add-change-mode");
+        rerenderCreateChangeItemForm();
+      },
+    });
+
     createButton({
       className: "submit-add-change-button primary-button",
       text: "Добавить изменение",
-      container: createChangeItemForm,
+      container: actionsContainer,
       onClick: () => {
         const section = notesData.find(
           (section) => section.type === createNotesChangeType.current
@@ -97,7 +122,7 @@ export const createChangeItemForm = ({
         onUpdate();
         contentContainer.classList.remove("popup-add-change-mode");
         rerenderCreateChangeItemForm();
-      }
+      },
     });
   };
 

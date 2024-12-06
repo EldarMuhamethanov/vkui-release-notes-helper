@@ -313,6 +313,17 @@
   box-shadow: var(--color-btn-shadow), var(--color-btn-inset-shadow);
 }
 
+.change-item-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.change-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .change-item-type {
   width: 100%;
   margin-bottom: 12px;

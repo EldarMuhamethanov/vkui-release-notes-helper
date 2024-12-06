@@ -29,10 +29,10 @@ export const createEditReleaseNotesPopup = ({
   onSave,
 }: DraggablePopupProps): {
   popup: HTMLElement;
-  updateTextareaValue: (textareaValue: string) => void;
+  updateTextareaValue: (textareaValue: string, forceRerender?: boolean) => void;
 } => {
   const textareaValueRef = createRef(textareaValue);
-  const prevReleaseNotesBodyRef = createRef<string>('');
+  const prevReleaseNotesBodyRef = createRef<string>("");
   const notesUpdater = releaseNotesUpdater("");
   const notesData: ReleaseNoteData[] = [];
 
@@ -64,7 +64,7 @@ export const createEditReleaseNotesPopup = ({
     container: contentContainer,
     onClick: () => {
       contentContainer.classList.add("popup-add-change-mode");
-    }
+    },
   });
 
   const onRerenderReleaseNotes = () => {
@@ -100,11 +100,11 @@ export const createEditReleaseNotesPopup = ({
     },
   });
 
-  const updateNotesData = (newTextareaValue: string) => {
+  const updateNotesData = (newTextareaValue: string, forceRerender = false) => {
     textareaValueRef.current = newTextareaValue;
 
     const releaseNotes = getPullRequestReleaseNotesBody(newTextareaValue);
-    if (releaseNotes === prevReleaseNotesBodyRef.current) {
+    if (releaseNotes === prevReleaseNotesBodyRef.current && !forceRerender) {
       return;
     }
     prevReleaseNotesBodyRef.current = releaseNotes || "";
