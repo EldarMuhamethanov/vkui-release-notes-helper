@@ -1,8 +1,8 @@
-const RELEASE_NOTE_HEADER = '## Release notes';
-const COMMENT_START = '<!-- ';
+const RELEASE_NOTE_HEADER = "## Release notes";
+const COMMENT_START = "<!-- ";
 
 const createReleaseNotesBlock = (notesBody: string) => {
-  return `## Release notes\n${notesBody}`;
+  return `## Release notes\n${notesBody || "-\n"}`;
 };
 
 export const getPullRequestReleaseNotesBody = (body: string): string | null => {
@@ -16,7 +16,10 @@ export const getPullRequestReleaseNotesBody = (body: string): string | null => {
   return body.slice(releaseNotesIndex + RELEASE_NOTE_HEADER.length, end).trim();
 };
 
-export const getUpdatedPullRequestReleaseNotesBody = (body: string, newNotesBody: string): string => {
+export const getUpdatedPullRequestReleaseNotesBody = (
+  body: string,
+  newNotesBody: string
+): string => {
   const releaseNotesIndex = body.indexOf(RELEASE_NOTE_HEADER);
 
   if (releaseNotesIndex === -1) {
@@ -30,4 +33,4 @@ export const getUpdatedPullRequestReleaseNotesBody = (body: string, newNotesBody
   return [head, createReleaseNotesBlock(newNotesBody), tail]
     .filter(Boolean)
     .join("");
-}
+};

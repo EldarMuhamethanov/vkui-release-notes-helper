@@ -3,14 +3,18 @@ import { ChangeData, ReleaseNoteData } from "../../parsing/types";
 import { createElement } from "../../utils/dom";
 
 const mutateObject = (obj: any, newObj: any) => {
-    // Сначала удаляем все старые свойства
-    Object.keys(obj).forEach(key => {
-        delete obj[key];
-    });
+  // Сначала удаляем все старые свойства
+  Object.keys(obj).forEach((key) => {
+    delete obj[key];
+  });
 
-    // Затем добавляем новые
-    Object.assign(obj, newObj);
-}
+  // Затем добавляем новые
+  Object.assign(obj, newObj);
+};
+
+const fixValue = (value: string) => {
+  return value.trim().replace(/\n/g, " ").replace(/\s+/g, " ");
+};
 
 export const createReleaseNotesItem = ({
   item,
@@ -58,22 +62,22 @@ export const createReleaseNotesItem = ({
         const currentType = item.type;
         const newComponent = element.value;
         if (currentType === "component" && newComponent) {
-          item.component = newComponent;
+          item.component = fixValue(newComponent);
         } else if (currentType === "component" && !newComponent) {
-            mutateObject(item, {
-                type: "unknown",
-                description: item.description,
-                additionalInfo: item.additionalInfo,
-            });
+          mutateObject(item, {
+            type: "unknown",
+            description: fixValue(item.description),
+            additionalInfo: fixValue(item.additionalInfo || ""),
+          });
         } else if (currentType === "unknown" && newComponent) {
-            mutateObject(item, {
-                type: "component",
-                component: newComponent,
-                description: item.description,
-                additionalInfo: item.additionalInfo,
-            });
+          mutateObject(item, {
+            type: "component",
+            component: fixValue(newComponent),
+            description: fixValue(item.description),
+            additionalInfo: fixValue(item.additionalInfo || ""),
+          });
         }
-            
+
         onUpdate();
       });
     }
@@ -94,7 +98,7 @@ export const createReleaseNotesItem = ({
     (element) => {
       element.value = item.description;
       element.addEventListener("change", () => {
-        item.description = element.value;
+        item.description = fixValue(element.value);
         onUpdate();
       });
     }
@@ -115,7 +119,7 @@ export const createReleaseNotesItem = ({
     (element) => {
       element.value = item.additionalInfo || "";
       element.addEventListener("change", () => {
-        item.additionalInfo = element.value;
+        item.additionalInfo = element.value.trim();
         onUpdate();
       });
     }

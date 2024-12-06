@@ -16,13 +16,15 @@ const getCommentBoxAsync = (
   prDescriptionBlock: HTMLElement
 ): Promise<HTMLElement> => {
   return new Promise((resolve) => {
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver(() => tryGetCommentBox());
+    const tryGetCommentBox = () => {
       const commentBox = getCommentBox(prDescriptionBlock);
       if (commentBox) {
         resolve(commentBox);
         observer.disconnect();
       }
-    });
+    };
+    tryGetCommentBox();
     observer.observe(prDescriptionBlock, {
       subtree: true,
       childList: true,
@@ -44,15 +46,20 @@ const initExtension = async () => {
   const commentBox = await getCommentBoxAsync(prDescriptionBlock);
   const textarea = getTextarea(commentBox);
 
-  const popup: HTMLElement | null = createEditReleaseNotesPopup({
+  const { popup, updateTextareaValue } = createEditReleaseNotesPopup({
     width: 500,
     height: 600,
-    textarea,
+    textareaValue: textarea.value,
     onClose: () => {},
     onSave: (newTextAreaValue) => {
       textarea.value = newTextAreaValue;
+      updateTextareaValue(textarea.value);
     },
   });
+
+  textarea.addEventListener("change", () =>
+    updateTextareaValue(textarea.value)
+  );
 
   createEditReleaseNotesButton({
     container: commentBox,

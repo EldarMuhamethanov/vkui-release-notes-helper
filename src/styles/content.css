@@ -203,9 +203,6 @@
 
 /* Секция релизных заметок */
 .release-notes-section {
-  padding: 16px;
-  margin-bottom: 24px;
-  border: 1px solid var(--color-btn-border);
   border-radius: 6px;
   background-color: var(--color-btn-bg);
 }
@@ -219,13 +216,16 @@
 }
 
 .release-notes-item {
-  margin-bottom: 16px;
   padding: 12px;
   background-color: var(--color-btn-bg);
   border: 1px solid var(--color-btn-border);
   border-radius: 6px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   position: relative;
+}
+
+.release-notes-item:not(:last-child) {
+  margin-bottom: 16px;
 }
 
 .release-notes-item:hover {

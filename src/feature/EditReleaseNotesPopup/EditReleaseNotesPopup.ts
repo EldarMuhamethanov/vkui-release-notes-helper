@@ -3,6 +3,7 @@ import {
   getUpdatedPullRequestReleaseNotesBody,
 } from "../../parsing/getPullRequestReleaseNotesBody";
 import { releaseNotesUpdater } from "../../parsing/releaseNotesUpdater";
+import { ReleaseNoteData } from "../../parsing/types";
 import { createElement } from "../../utils/dom";
 import { createChangeItemForm } from "./CreateChangeItemForm";
 import { createFooter } from "./Footer";
@@ -13,31 +14,23 @@ import { createReleaseNotesContainer } from "./ReleaseNotesContainer";
 interface DraggablePopupProps {
   width: number;
   height: number;
-  textarea: HTMLTextAreaElement;
+  textareaValue: string;
   onClose: () => void;
   onSave: (newBody: string) => void;
 }
 
-const getUpdatedTextareaValue = (
-  textarea: HTMLTextAreaElement,
-  newNotesBody: string
-) => {
-  const textareaValue = textarea.value;
-  return getUpdatedPullRequestReleaseNotesBody(textareaValue, newNotesBody);
-};
-
 export const createEditReleaseNotesPopup = ({
   width,
   height,
-  textarea,
+  textareaValue,
   onClose,
   onSave,
-}: DraggablePopupProps): HTMLElement | null => {
-  const content = textarea.value;
-  const releaseNotes = getPullRequestReleaseNotesBody(content);
-  const notesUpdater = releaseNotesUpdater(releaseNotes || "");
-  const notesData = notesUpdater.getReleaseNotesData();
-  notesUpdater.updateReleaseNotes(notesData);
+}: DraggablePopupProps): {
+  popup: HTMLElement;
+  updateTextareaValue: (textareaValue: string) => void;
+} => {
+  const notesUpdater = releaseNotesUpdater("");
+  const notesData: ReleaseNoteData[] = [];
 
   const popup = createElement("div", "draggable-popup", null, (element) => {
     element.style.width = `${width}px`;
@@ -88,7 +81,12 @@ export const createEditReleaseNotesPopup = ({
   createFooter({
     popup,
     onSave: () => {
-      onSave(getUpdatedTextareaValue(textarea, notesUpdater.getBody()));
+      onSave(
+        getUpdatedPullRequestReleaseNotesBody(
+          textareaValue,
+          notesUpdater.getBody()
+        )
+      );
     },
     onCancel: () => {
       popup.remove();
@@ -96,6 +94,23 @@ export const createEditReleaseNotesPopup = ({
     },
   });
 
+  const updateNotesData = (newTextareaValue: string) => {
+    const releaseNotes = getPullRequestReleaseNotesBody(newTextareaValue);
+    notesUpdater.setBody(releaseNotes || "");
+    notesData.splice(
+      0,
+      notesData.length,
+      ...notesUpdater.getReleaseNotesData()
+    );
+
+    onRerenderReleaseNotes();
+  };
+
+  updateNotesData(textareaValue);
+
   popupDnD({ popup, header, width, height });
-  return popup;
+  return {
+    popup,
+    updateTextareaValue: updateNotesData,
+  };
 };

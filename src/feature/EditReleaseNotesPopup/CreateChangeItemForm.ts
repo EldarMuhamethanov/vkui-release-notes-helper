@@ -7,8 +7,7 @@ import { createReleaseNotesItem } from "./ReleaseNotesSection";
 
 function getDefaultChangeData(): ChangeData {
   return {
-    type: "component",
-    component: "",
+    type: "unknown",
     description: "",
     additionalInfo: "",
   };
@@ -35,6 +34,9 @@ export const createChangeItemForm = ({
 
   const rerenderCreateChangeItemForm = () => {
     createChangeItemForm.innerHTML = "";
+    createNotesChangeItem.current = getDefaultChangeData();
+    createNotesChangeType.current = "improvement";
+
     createElement<HTMLSelectElement>(
       "select",
       "change-item-type",
@@ -72,7 +74,6 @@ export const createChangeItemForm = ({
       onUpdate: () => {},
       onDelete: () => {
         contentContainer.classList.remove("popup-add-change-mode");
-        createNotesChangeItem.current = getDefaultChangeData();
         rerenderCreateChangeItemForm();
       },
     });
@@ -97,7 +98,6 @@ export const createChangeItemForm = ({
           onUpdate();
 
           contentContainer.classList.remove("popup-add-change-mode");
-          createNotesChangeItem.current = getDefaultChangeData();
           rerenderCreateChangeItemForm();
         });
       }

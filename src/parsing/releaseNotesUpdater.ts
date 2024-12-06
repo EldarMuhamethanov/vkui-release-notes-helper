@@ -9,6 +9,10 @@ import { convertChangesToString } from "./convertChangesToString";
 export function releaseNotesUpdater(currentBody: string) {
   let body = currentBody.trim();
 
+  const setBody = (newBody: string) => {
+    body = newBody.trim();
+  };
+
   const getReleaseNotesData = (): ReleaseNoteData[] => {
     const releaseNotesData: ReleaseNoteData[] = [];
     const sectionRegex = /## (.+)\r?\n([\s\S]*?)(?=##|$)/g;
@@ -55,5 +59,6 @@ export function releaseNotesUpdater(currentBody: string) {
     getBody: () => body,
     getReleaseNotesData,
     updateReleaseNotes,
+    setBody,
   };
 }
