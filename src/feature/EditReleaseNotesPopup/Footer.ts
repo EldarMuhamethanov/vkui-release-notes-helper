@@ -11,12 +11,12 @@ export const createFooter = ({
 }) => {
   const footer = createElement("div", "draggable-popup-footer", popup);
 
-  createElement("button", "popup-button-secondary", footer, (element) => {
+  createElement("button", "secondary-button", footer, (element) => {
     element.textContent = "Отмена";
     element.onclick = onCancel;
   });
 
-  createElement("button", "popup-button-primary", footer, (element) => {
+  createElement("button", "primary-button", footer, (element) => {
     element.textContent = "Изменить";
     element.onclick = () => {
       onSave();

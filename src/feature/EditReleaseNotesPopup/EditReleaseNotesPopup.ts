@@ -54,7 +54,7 @@ export const createEditReleaseNotesPopup = ({
     popup
   );
 
-  createElement("button", "add-change-button", contentContainer, (element) => {
+  createElement("button", "add-change-button primary-button", contentContainer, (element) => {
     element.textContent = "Добавить изменение";
     element.addEventListener("click", () => {
       contentContainer.classList.add("popup-add-change-mode");
