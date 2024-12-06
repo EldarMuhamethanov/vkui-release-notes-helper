@@ -1,4 +1,4 @@
-import { createEditReleaseNotesButton } from "./feature/editReleaseNotesButton";
+import { createEditReleaseNotesButton } from "./feature/EditReleaseNotesButton";
 import "./styles/content.css";
 import { createEditReleaseNotesPopup } from "./feature/EditReleaseNotesPopup/EditReleaseNotesPopup";
 
@@ -59,9 +59,9 @@ const initExtension = async () => {
     },
   });
 
-  textarea.addEventListener("change", () =>
-    updateTextareaValue(textarea.value)
-  );
+  textarea.addEventListener("change", () => {
+    updateTextareaValue(textarea.value);
+  });
 
   createEditReleaseNotesButton({
     container: commentBox,

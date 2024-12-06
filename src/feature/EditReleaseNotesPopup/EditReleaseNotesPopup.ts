@@ -11,6 +11,7 @@ import { createHeader } from "./Header";
 import { popupDnD } from "./popupDnd";
 import { createReleaseNotesContainer } from "./ReleaseNotesContainer";
 import { createButton } from "../../utils/dom";
+import { createRef } from "../../utils/createRef";
 
 interface DraggablePopupProps {
   width: number;
@@ -30,6 +31,8 @@ export const createEditReleaseNotesPopup = ({
   popup: HTMLElement;
   updateTextareaValue: (textareaValue: string) => void;
 } => {
+  const textareaValueRef = createRef(textareaValue);
+  const prevReleaseNotesBodyRef = createRef<string>('');
   const notesUpdater = releaseNotesUpdater("");
   const notesData: ReleaseNoteData[] = [];
 
@@ -86,7 +89,7 @@ export const createEditReleaseNotesPopup = ({
     onSave: () => {
       onSave(
         getUpdatedPullRequestReleaseNotesBody(
-          textareaValue,
+          textareaValueRef.current,
           notesUpdater.getBody()
         )
       );
@@ -98,7 +101,13 @@ export const createEditReleaseNotesPopup = ({
   });
 
   const updateNotesData = (newTextareaValue: string) => {
+    textareaValueRef.current = newTextareaValue;
+
     const releaseNotes = getPullRequestReleaseNotesBody(newTextareaValue);
+    if (releaseNotes === prevReleaseNotesBodyRef.current) {
+      return;
+    }
+    prevReleaseNotesBodyRef.current = releaseNotes || "";
     notesUpdater.setBody(releaseNotes || "");
     notesData.splice(
       0,
