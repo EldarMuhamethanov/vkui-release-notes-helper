@@ -10,6 +10,7 @@ import { createFooter } from "./Footer";
 import { createHeader } from "./Header";
 import { popupDnD } from "./popupDnd";
 import { createReleaseNotesContainer } from "./ReleaseNotesContainer";
+import { createButton } from "../../utils/dom";
 
 interface DraggablePopupProps {
   width: number;
@@ -54,11 +55,13 @@ export const createEditReleaseNotesPopup = ({
     popup
   );
 
-  createElement("button", "add-change-button primary-button", contentContainer, (element) => {
-    element.textContent = "Добавить изменение";
-    element.addEventListener("click", () => {
+  createButton({
+    className: "add-change-button primary-button",
+    text: "Добавить изменение",
+    container: contentContainer,
+    onClick: () => {
       contentContainer.classList.add("popup-add-change-mode");
-    });
+    }
   });
 
   const onRerenderReleaseNotes = () => {

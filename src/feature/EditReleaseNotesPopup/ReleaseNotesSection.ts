@@ -1,6 +1,6 @@
 import { getHeaderBySectionType } from "../../parsing/headers";
 import { ChangeData, ReleaseNoteData } from "../../parsing/types";
-import { createElement } from "../../utils/dom";
+import { createButton, createElement } from "../../utils/dom";
 
 const mutateObject = (obj: any, newObj: any) => {
   // Сначала удаляем все старые свойства
@@ -29,18 +29,15 @@ export const createReleaseNotesItem = ({
 }) => {
   const itemElement = createElement("div", "release-notes-item", container);
 
-  createElement(
-    "button",
-    "release-notes-item-delete",
-    itemElement,
-    (element) => {
-      element.textContent = "✕";
-      element.title = "Удалить изменение";
-      element.addEventListener("click", () => {
-        onDelete(item);
-      });
-    }
-  );
+  createButton({
+    className: "release-notes-item-delete",
+    text: "✕",
+    title: "Удалить изменение",
+    container: itemElement,
+    onClick: () => {
+      onDelete(item);
+    },
+  });
 
   createElement(
     "span",

@@ -1,4 +1,4 @@
-import { createElement } from "../../utils/dom";
+import { createButton, createElement } from "../../utils/dom";
 
 export const createHeader = ({
   popup,
@@ -13,9 +13,11 @@ export const createHeader = ({
     element.textContent = "Редактирование Release Notes";
   });
 
-  createElement("button", "draggable-popup-close", header, (element) => {
-    element.textContent = "×";
-    element.onclick = onCancel;
+  createButton({
+    className: "draggable-popup-close",
+    text: "×",
+    container: header,
+    onClick: onCancel
   });
 
   return header;

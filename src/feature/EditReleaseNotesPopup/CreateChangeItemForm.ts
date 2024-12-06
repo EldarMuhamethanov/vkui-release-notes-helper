@@ -4,6 +4,7 @@ import { ReleaseNoteData } from "../../parsing/types";
 import { createRef } from "../../utils/createRef";
 import { createElement } from "../../utils/dom";
 import { createReleaseNotesItem } from "./ReleaseNotesSection";
+import { createButton } from "../../utils/dom";
 
 function getDefaultChangeData(): ChangeData {
   return {
@@ -77,31 +78,27 @@ export const createChangeItemForm = ({
         rerenderCreateChangeItemForm();
       },
     });
-    createElement(
-      "button",
-      "submit-add-change-button",
-      createChangeItemForm,
-      (element) => {
-        element.textContent = "Добавить изменение";
-        element.addEventListener("click", () => {
-          const section = notesData.find(
-            (section) => section.type === createNotesChangeType.current
-          );
-          if (section) {
-            section.data.push(createNotesChangeItem.current);
-          } else {
-            notesData.push({
-              type: createNotesChangeType.current,
-              data: [createNotesChangeItem.current],
-            });
-          }
-          onUpdate();
-
-          contentContainer.classList.remove("popup-add-change-mode");
-          rerenderCreateChangeItemForm();
-        });
+    createButton({
+      className: "submit-add-change-button primary-button",
+      text: "Добавить изменение",
+      container: createChangeItemForm,
+      onClick: () => {
+        const section = notesData.find(
+          (section) => section.type === createNotesChangeType.current
+        );
+        if (section) {
+          section.data.push(createNotesChangeItem.current);
+        } else {
+          notesData.push({
+            type: createNotesChangeType.current,
+            data: [createNotesChangeItem.current],
+          });
+        }
+        onUpdate();
+        contentContainer.classList.remove("popup-add-change-mode");
+        rerenderCreateChangeItemForm();
       }
-    );
+    });
   };
 
   rerenderCreateChangeItemForm();

@@ -1,9 +1,14 @@
+import { createButton } from "../utils/dom";
+
 const initEditButton = (container: HTMLElement): HTMLButtonElement => {
-  const button = document.createElement("button");
-  button.textContent = "Редактировать Release Note";
-  button.className = "edit-pr-button primary-button";
-  container.style.position = "relative";
-  container.appendChild(button);
+  const button = createButton({
+    text: "Редактировать Release Note",
+    className: "edit-pr-button primary-button",
+    container,
+    custom: () => {
+      container.style.position = "relative";
+    }
+  });
   return button;
 };
 

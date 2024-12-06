@@ -1,4 +1,4 @@
-import { createElement } from "../../utils/dom";
+import { createButton, createElement } from "../../utils/dom";
 
 export const createFooter = ({
   popup,
@@ -11,16 +11,20 @@ export const createFooter = ({
 }) => {
   const footer = createElement("div", "draggable-popup-footer", popup);
 
-  createElement("button", "secondary-button", footer, (element) => {
-    element.textContent = "Отмена";
-    element.onclick = onCancel;
+  createButton({
+    className: "secondary-button",
+    text: "Отмена",
+    container: footer,
+    onClick: onCancel
   });
 
-  createElement("button", "primary-button", footer, (element) => {
-    element.textContent = "Изменить";
-    element.onclick = () => {
+  createButton({
+    className: "primary-button",
+    text: "Изменить",
+    container: footer,
+    onClick: () => {
       onSave();
       onCancel();
-    };
+    }
   });
 };
