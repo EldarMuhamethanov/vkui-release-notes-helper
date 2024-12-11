@@ -46,7 +46,7 @@ const initExtension = async () => {
   const commentBox = await getCommentBoxAsync(prDescriptionBlock);
   const textarea = getTextarea(commentBox);
 
-  const { popup, updateTextareaValue } = createEditReleaseNotesPopup({
+  const { popup, updateTextareaValue, onOpen } = createEditReleaseNotesPopup({
     width: 500,
     height: 600,
     textareaValue: textarea.value,
@@ -65,7 +65,10 @@ const initExtension = async () => {
 
   createEditReleaseNotesButton({
     container: commentBox,
-    onClick: () => popup && document.body.appendChild(popup),
+    onClick: () => {
+      document.body.appendChild(popup);
+      onOpen();
+    },
   });
 };
 

@@ -29,6 +29,7 @@ export const createEditReleaseNotesPopup = ({
   onSave,
 }: DraggablePopupProps): {
   popup: HTMLElement;
+  onOpen: () => void;
   updateTextareaValue: (textareaValue: string, forceRerender?: boolean) => void;
 } => {
   const textareaValueRef = createRef(textareaValue);
@@ -67,9 +68,11 @@ export const createEditReleaseNotesPopup = ({
     },
   });
 
-  const onRerenderReleaseNotes = () => {
+  const onRerenderReleaseNotes = (forceRerender = true) => {
     notesUpdater.updateReleaseNotes(notesData);
-    renderReleaseNotes();
+    if (forceRerender) {
+      renderReleaseNotes();
+    }
   };
 
   createChangeItemForm({
@@ -115,14 +118,15 @@ export const createEditReleaseNotesPopup = ({
       ...notesUpdater.getReleaseNotesData()
     );
 
-    onRerenderReleaseNotes();
+    onRerenderReleaseNotes(true);
   };
 
   updateNotesData(textareaValue);
 
-  popupDnD({ popup, header, width, height });
+  const { onOpen } = popupDnD({ popup, header, width, height });
   return {
     popup,
+    onOpen,
     updateTextareaValue: updateNotesData,
   };
 };

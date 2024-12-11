@@ -80,18 +80,23 @@ export const popupDnD = ({
     isResizing = false;
   };
 
-  // Устанавливаем начальную позицию по центру экрана
-  const initialLeft = clamp(
-    window.innerWidth / 2 - width / 2,
-    0,
-    window.innerWidth - width
-  );
-  const initialTop = clamp(
-    window.innerHeight / 2 - height / 2,
-    0,
-    window.innerHeight - height
-  );
+  const onOpen = () => {
+    // Устанавливаем начальную позицию по центру экрана
+    const initialLeft = clamp(
+      window.innerWidth / 2 - width / 2,
+      0,
+      window.innerWidth - width
+    );
+    const initialTop = clamp(
+      window.innerHeight / 2 - height / 2 + window.scrollY,
+      0,
+      window.innerHeight - height + window.scrollY
+    );
+    popup.style.left = `${initialLeft}px`;
+    popup.style.top = `${initialTop}px`;
+  };
 
-  popup.style.left = `${initialLeft}px`;
-  popup.style.top = `${initialTop}px`;
+  return {
+    onOpen,
+  };
 };

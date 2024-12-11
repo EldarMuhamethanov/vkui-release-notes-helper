@@ -1,11 +1,9 @@
 import { ChangeData } from "./types";
 
-const COMPONENT_REGEX = /-\s(\w+):(.+)?/;
-const COMPONENT_WITH_LINK_REGEX = /-\s\[(\w+)]\(.+\):(.+)?/;
-const COMPONENT_SUB_ITEM_REGEX = /\s{2}-\s(.+)/;
-const UNKNOWN_CHANGE_REGEX = /-\s(.+)/;
-const CODE_BLOCK_START_REGEX = /```(diff)?/;
-const CODE_BLOCK_END_REGEX = /```/;
+const COMPONENT_REGEX = /^-\s(\w+):(.+)?/;
+const COMPONENT_WITH_LINK_REGEX = /^-\s\[(\w+)]\(.+\):(.+)?/;
+const COMPONENT_SUB_ITEM_REGEX = /^\s{2}-\s(.+)/;
+const UNKNOWN_CHANGE_REGEX = /^-\s(.+)/;
 
 function removeLeadingSpaces(str: string, n: number): string {
   const spaceRegex = /^(\s+)/;
@@ -21,7 +19,6 @@ export function parseChanges(text: string): ChangeData[] {
   let changes: ChangeData[] = [];
   const lines = text.split(/\r?\n/);
   let currentChange: ChangeData | null = null;
-  let codeBlockStarted = false;
   let subInfoItem = false;
 
   for (let i = 0; i < lines.length; i++) {
@@ -30,14 +27,9 @@ export function parseChanges(text: string): ChangeData[] {
     const componentWithLinkMatch = line.match(COMPONENT_WITH_LINK_REGEX);
     const componentSubItemMatch = line.match(COMPONENT_SUB_ITEM_REGEX);
     const unknownChangeMatch = line.match(UNKNOWN_CHANGE_REGEX);
-    const codeBlockStartMatch = line.match(CODE_BLOCK_START_REGEX);
-    const codeBlockEndMatch: RegExpMatchArray | null = codeBlockStarted
-      ? line.match(CODE_BLOCK_END_REGEX)
-      : null;
     const addToAdditionalInfo = () => {
       if (currentChange) {
-        const subInfo =
-          currentChange.type === "component" && subInfoItem;
+        const subInfo = currentChange.type === "component" && subInfoItem;
         currentChange.additionalInfo += `${removeLeadingSpaces(
           line,
           subInfo ? 4 : 2
@@ -45,12 +37,7 @@ export function parseChanges(text: string): ChangeData[] {
       }
     };
 
-    if (codeBlockStartMatch || codeBlockEndMatch) {
-      codeBlockStarted = !codeBlockEndMatch;
-      addToAdditionalInfo();
-    } else if (codeBlockStarted) {
-      addToAdditionalInfo();
-    } else if (componentMatch || componentWithLinkMatch) {
+    if (componentMatch || componentWithLinkMatch) {
       const match = componentMatch || componentWithLinkMatch;
       if (match) {
         const component = match[1];
@@ -67,7 +54,8 @@ export function parseChanges(text: string): ChangeData[] {
     } else if (
       componentSubItemMatch &&
       currentChange &&
-      currentChange.type === "component"
+      currentChange.type === "component" &&
+      !currentChange.description
     ) {
       // Описание для текущего компонента
       const description = componentSubItemMatch[1].trim();

@@ -9,7 +9,7 @@ export const createReleaseNotesContainer = ({
 }: {
   contentContainer: HTMLElement;
   notesData: ReleaseNoteData[];
-  onUpdate: () => void;
+  onUpdate: (forceRerender?: boolean) => void;
 }) => {
   const releaseNotesContainer = createElement(
     "div",
@@ -18,14 +18,15 @@ export const createReleaseNotesContainer = ({
   );
   const renderReleaseNotes = () => {
     releaseNotesContainer.innerHTML = "";
-    
+
     if (notesData.length === 0) {
       const placeholder = createElement(
         "div",
         "release-notes-placeholder",
         releaseNotesContainer
       );
-      placeholder.textContent = "Нет релиз-ноутов. Добавьте новые изменения, используя форму выше.";
+      placeholder.textContent =
+        "Нет релиз-ноутов. Добавьте новые изменения, используя форму выше.";
       return;
     }
 
@@ -33,7 +34,7 @@ export const createReleaseNotesContainer = ({
       createReleaseNotesSection({
         releaseNotes: section,
         container: releaseNotesContainer,
-        onUpdate,
+        onUpdate: () => onUpdate(false),
         onDelete: (item) => {
           const index = section.data.indexOf(item);
           if (index !== -1) {
